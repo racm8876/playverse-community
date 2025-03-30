@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
-import { Menu, X, Gamepad, Users, BookOpen, User } from "lucide-react";
+import { Menu, X, Gamepad, Users, BookOpen, User, Settings } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,6 +46,10 @@ const Navbar = () => {
                   className="w-8 h-8 rounded-full border border-muted"
                 />
                 <span>{user?.username}</span>
+              </Link>
+              <Link to="/admin" className="flex items-center space-x-2 hover:text-primary transition-colors">
+                <Settings size={18} />
+                <span>Admin</span>
               </Link>
               <Button variant="outline" onClick={logout}>Logout</Button>
             </div>
@@ -91,6 +95,10 @@ const Navbar = () => {
                 <Link to="/profile" className="flex items-center space-x-2" onClick={closeMenu}>
                   <User size={20} />
                   <span>Profile</span>
+                </Link>
+                <Link to="/admin" className="flex items-center space-x-2" onClick={closeMenu}>
+                  <Settings size={20} />
+                  <span>Admin</span>
                 </Link>
                 <Button variant="outline" onClick={() => { logout(); closeMenu(); }}>
                   Logout

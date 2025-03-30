@@ -42,6 +42,23 @@ export const gameService = {
       headers: getHeaders()
     });
     return handleResponse<Game>(response);
+  },
+
+  create: async (gameData: {
+    title: string;
+    description: string;
+    imageUrl: string;
+    genre: string;
+    platform: string[];
+    releaseDate: string;
+    rating: number;
+  }): Promise<Game> => {
+    const response = await fetch(`${API_URL}/games`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(gameData)
+    });
+    return handleResponse<Game>(response);
   }
 };
 
@@ -75,6 +92,21 @@ export const communityService = {
       headers: getHeaders()
     });
     return handleResponse<{ message: string }>(response);
+  },
+
+  create: async (communityData: {
+    name: string;
+    description: string;
+    imageUrl: string;
+    game: string;
+    tags: string[];
+  }): Promise<Community> => {
+    const response = await fetch(`${API_URL}/community`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(communityData)
+    });
+    return handleResponse<Community>(response);
   }
 };
 
@@ -109,6 +141,20 @@ export const blogService = {
       headers: getHeaders()
     });
     return handleResponse<{ message: string }>(response);
+  },
+
+  create: async (blogData: {
+    title: string;
+    content: string;
+    imageUrl: string;
+    tags: string[];
+  }): Promise<Blog> => {
+    const response = await fetch(`${API_URL}/blogs`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(blogData)
+    });
+    return handleResponse<Blog>(response);
   }
 };
 
