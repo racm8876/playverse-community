@@ -98,7 +98,7 @@ const Games = () => {
                 <SelectValue placeholder="Select Genre" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Genres</SelectItem>
+                <SelectItem value="all-genres">All Genres</SelectItem>
                 {genres.map((genre) => (
                   <SelectItem key={genre} value={genre}>
                     {genre}
@@ -112,7 +112,7 @@ const Games = () => {
                 <SelectValue placeholder="Select Platform" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Platforms</SelectItem>
+                <SelectItem value="all-platforms">All Platforms</SelectItem>
                 {platforms.map((platform) => (
                   <SelectItem key={platform} value={platform}>
                     {platform}

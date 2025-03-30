@@ -98,7 +98,7 @@ const Communities = () => {
                 <SelectValue placeholder="Select Game" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Games</SelectItem>
+                <SelectItem value="all-games">All Games</SelectItem>
                 {games.map((game) => (
                   <SelectItem key={game} value={game}>
                     {game}
@@ -112,7 +112,7 @@ const Communities = () => {
                 <SelectValue placeholder="Select Tag" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Tags</SelectItem>
+                <SelectItem value="all-tags">All Tags</SelectItem>
                 {tags.map((tag) => (
                   <SelectItem key={tag} value={tag}>
                     {tag}
