@@ -1,4 +1,3 @@
-
 import { Blog, Game, Community } from "./types";
 
 const API_URL = "http://localhost:8080";
@@ -43,7 +42,7 @@ export const gameService = {
     });
     return handleResponse<Game>(response);
   },
-
+  
   create: async (gameData: {
     title: string;
     description: string;
@@ -59,6 +58,14 @@ export const gameService = {
       body: JSON.stringify(gameData)
     });
     return handleResponse<Game>(response);
+  },
+  
+  delete: async (id: string): Promise<{ message: string }> => {
+    const response = await fetch(`${API_URL}/admin/games/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return handleResponse<{ message: string }>(response);
   }
 };
 
@@ -93,7 +100,7 @@ export const communityService = {
     });
     return handleResponse<{ message: string }>(response);
   },
-
+  
   create: async (communityData: {
     name: string;
     description: string;
@@ -107,6 +114,14 @@ export const communityService = {
       body: JSON.stringify(communityData)
     });
     return handleResponse<Community>(response);
+  },
+  
+  delete: async (id: string): Promise<{ message: string }> => {
+    const response = await fetch(`${API_URL}/admin/communities/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return handleResponse<{ message: string }>(response);
   }
 };
 
@@ -142,7 +157,7 @@ export const blogService = {
     });
     return handleResponse<{ message: string }>(response);
   },
-
+  
   create: async (blogData: {
     title: string;
     content: string;
@@ -155,6 +170,14 @@ export const blogService = {
       body: JSON.stringify(blogData)
     });
     return handleResponse<Blog>(response);
+  },
+  
+  delete: async (id: string): Promise<{ message: string }> => {
+    const response = await fetch(`${API_URL}/admin/blogs/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return handleResponse<{ message: string }>(response);
   }
 };
 
@@ -172,5 +195,31 @@ export const userService = {
       body: JSON.stringify(userData)
     });
     return handleResponse<{ message: string; user: any }>(response);
+  },
+  
+  getAllUsers: async (): Promise<any[]> => {
+    const response = await fetch(`${API_URL}/admin/users`, {
+      headers: getHeaders()
+    });
+    return handleResponse<any[]>(response);
+  },
+  
+  updateAdminStatus: async (userId: string, isAdmin: boolean): Promise<{ message: string; user: any }> => {
+    const response = await fetch(`${API_URL}/admin/users/${userId}/admin`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ isAdmin })
+    });
+    return handleResponse<{ message: string; user: any }>(response);
+  }
+};
+
+// Admin API services
+export const adminService = {
+  getStats: async (): Promise<{ stats: { users: number; games: number; blogs: number; communities: number } }> => {
+    const response = await fetch(`${API_URL}/admin/stats`, {
+      headers: getHeaders()
+    });
+    return handleResponse<{ stats: { users: number; games: number; blogs: number; communities: number } }>(response);
   }
 };

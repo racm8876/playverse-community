@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const gameRoutes = require('./routes/games');
 const communityRoutes = require('./routes/communities');
 const blogRoutes = require('./routes/blogs');
+const adminRoutes = require('./routes/admin');
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +29,7 @@ app.use('/auth', authRoutes);
 app.use('/games', gameRoutes);
 app.use('/community', communityRoutes);
 app.use('/blogs', blogRoutes);
+app.use('/admin', adminRoutes);
 
 // Root route
 app.get('/', (req, res) => {

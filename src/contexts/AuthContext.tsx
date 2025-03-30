@@ -8,12 +8,14 @@ interface User {
   profilePicture?: string;
   bio?: string;
   joinedDate: string;
+  isAdmin?: boolean;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -27,6 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -62,11 +65,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: data.user.email,
         profilePicture: data.user.profilePicture,
         bio: data.user.bio,
-        joinedDate: data.user.joinedDate
+        joinedDate: data.user.joinedDate,
+        isAdmin: data.user.isAdmin || false
       };
       
       setUser(userData);
       setIsAuthenticated(true);
+      setIsAdmin(userData.isAdmin || false);
     } catch (error) {
       console.error('Error fetching user profile:', error);
       localStorage.removeItem('token');
@@ -101,11 +106,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: data.user.email,
         profilePicture: data.user.profilePicture || '',
         bio: data.user.bio || '',
-        joinedDate: data.user.joinedDate
+        joinedDate: data.user.joinedDate,
+        isAdmin: data.user.isAdmin || false
       };
       
       setUser(userData);
       setIsAuthenticated(true);
+      setIsAdmin(userData.isAdmin || false);
       console.log('Login successful');
     } catch (error) {
       console.error('Login error:', error);
@@ -148,7 +155,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, isAdmin, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

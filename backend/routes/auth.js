@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -32,7 +31,7 @@ router.post('/signup', async (req, res) => {
     const { error } = registerSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
     
-    const { username, email, password } = req.body;
+    const { username, email, password, isAdmin } = req.body;
     
     // Check if user already exists
     let user = await User.findOne({ email });
@@ -46,7 +45,8 @@ router.post('/signup', async (req, res) => {
     user = new User({
       username,
       email,
-      password
+      password,
+      ...(isAdmin !== undefined && { isAdmin })
     });
     
     // Save user to database
@@ -179,6 +179,16 @@ router.delete('/deleteUser', auth, async (req, res) => {
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     console.error('Delete user error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Check if a user is admin
+router.get('/isAdmin', auth, async (req, res) => {
+  try {
+    res.json({ isAdmin: req.user.isAdmin || false });
+  } catch (error) {
+    console.error('Admin check error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

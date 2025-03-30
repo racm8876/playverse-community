@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   joinedDate: {
     type: Date,
     default: Date.now

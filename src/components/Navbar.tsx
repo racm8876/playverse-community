@@ -7,7 +7,7 @@ import { Menu, X, Gamepad, Users, BookOpen, User, Settings } from "lucide-react"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, isAdmin } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -47,10 +47,12 @@ const Navbar = () => {
                 />
                 <span>{user?.username}</span>
               </Link>
-              <Link to="/admin" className="flex items-center space-x-2 hover:text-primary transition-colors">
-                <Settings size={18} />
-                <span>Admin</span>
-              </Link>
+              {isAdmin && (
+                <Link to="/admin" className="flex items-center space-x-2 hover:text-primary transition-colors">
+                  <Settings size={18} />
+                  <span>Admin</span>
+                </Link>
+              )}
               <Button variant="outline" onClick={logout}>Logout</Button>
             </div>
           ) : (
@@ -96,10 +98,12 @@ const Navbar = () => {
                   <User size={20} />
                   <span>Profile</span>
                 </Link>
-                <Link to="/admin" className="flex items-center space-x-2" onClick={closeMenu}>
-                  <Settings size={20} />
-                  <span>Admin</span>
-                </Link>
+                {isAdmin && (
+                  <Link to="/admin" className="flex items-center space-x-2" onClick={closeMenu}>
+                    <Settings size={20} />
+                    <span>Admin</span>
+                  </Link>
+                )}
                 <Button variant="outline" onClick={() => { logout(); closeMenu(); }}>
                   Logout
                 </Button>
