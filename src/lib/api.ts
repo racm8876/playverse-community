@@ -1,7 +1,84 @@
+import { Blog } from "./types";
+import { Game } from "./types";
+import { Community } from "./types";
 
-import { Blog } from "../components/BlogCard";
-import { Game } from "../components/GameCard";
-import { Community } from "../components/CommunityCard";
+const API_URL = "http://localhost:8080"; // Backend API URL
+
+// Helper function to handle API responses
+async function handleResponse<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `API error: ${response.status}`);
+  }
+  return response.json();
+}
+
+// Get authentication token from localStorage
+function getAuthHeaders() {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
+
+// API functions for games
+export const getGames = async (): Promise<Game[]> => {
+  try {
+    const response = await fetch(`${API_URL}/games`, {
+      headers: getAuthHeaders()
+    });
+    return handleResponse<Game[]>(response);
+  } catch (error) {
+    console.error("Error fetching games:", error);
+    // Fallback to mock data if the API fails
+    return getMockGames();
+  }
+};
+
+// API functions for communities
+export const getCommunities = async (): Promise<Community[]> => {
+  try {
+    const response = await fetch(`${API_URL}/community`, {
+      headers: getAuthHeaders()
+    });
+    return handleResponse<Community[]>(response);
+  } catch (error) {
+    console.error("Error fetching communities:", error);
+    // Fallback to mock data if the API fails
+    return getMockCommunities();
+  }
+};
+
+// API functions for blogs
+export const getBlogs = async (): Promise<Blog[]> => {
+  try {
+    const response = await fetch(`${API_URL}/blogs`, {
+      headers: getAuthHeaders()
+    });
+    return handleResponse<Blog[]>(response);
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    // Fallback to mock data if the API fails
+    return getMockBlogs();
+  }
+};
+
+// Mock data functions as fallbacks
+const getMockGames = async (): Promise<Game[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(gamesData), 800);
+  });
+};
+
+const getMockCommunities = async (): Promise<Community[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(communitiesData), 800);
+  });
+};
+
+const getMockBlogs = async (): Promise<Blog[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(blogsData), 800);
+  });
+};
 
 // Mock data for games
 const gamesData: Game[] = [
@@ -194,25 +271,3 @@ const blogsData: Blog[] = [
     readTime: "14 min read"
   }
 ];
-
-// API functions
-export const getGames = async (): Promise<Game[]> => {
-  // In a real app, this would be a fetch call to a backend API
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(gamesData), 800);
-  });
-};
-
-export const getCommunities = async (): Promise<Community[]> => {
-  // In a real app, this would be a fetch call to a backend API
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(communitiesData), 800);
-  });
-};
-
-export const getBlogs = async (): Promise<Blog[]> => {
-  // In a real app, this would be a fetch call to a backend API
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(blogsData), 800);
-  });
-};

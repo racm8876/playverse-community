@@ -19,6 +19,8 @@ interface AuthContextType {
   logout: () => void;
 }
 
+const API_URL = "http://localhost:8080"; // Backend API URL
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -38,15 +40,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const fetchUserProfile = async () => {
     setIsLoading(true);
     try {
-      // Mock user profile for now
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await fetch(`${API_URL}/auth/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user profile');
+      }
+
+      const data = await response.json();
       const userData = {
-        id: '1',
-        username: 'gamer123',
-        email: 'gamer@example.com',
-        profilePicture: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
-        bio: 'Gaming enthusiast and community member',
-        joinedDate: '2023-01-15'
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
+        profilePicture: data.user.profilePicture,
+        bio: data.user.bio,
+        joinedDate: data.user.joinedDate
       };
+      
       setUser(userData);
       setIsAuthenticated(true);
     } catch (error) {
@@ -60,19 +78,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Mock login response for now
-      const mockUser = {
-        id: '1',
-        username: 'gamer123',
-        email,
-        profilePicture: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
-        bio: 'Gaming enthusiast and community member',
-        joinedDate: '2023-01-15'
-      };
-      const token = 'mock-jwt-token';
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+
+      const data = await response.json();
       
-      localStorage.setItem('token', token);
-      setUser(mockUser);
+      localStorage.setItem('token', data.token);
+      
+      const userData = {
+        id: data.user.id,
+        username: data.user.username,
+        email: data.user.email,
+        profilePicture: data.user.profilePicture || '',
+        bio: data.user.bio || '',
+        joinedDate: data.user.joinedDate
+      };
+      
+      setUser(userData);
       setIsAuthenticated(true);
       console.log('Login successful');
     } catch (error) {
@@ -86,7 +118,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Mock register response
+      const response = await fetch(`${API_URL}/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, email, password })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+
       console.log('Registration successful');
     } catch (error) {
       console.error('Registration error:', error);

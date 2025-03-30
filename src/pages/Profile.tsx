@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +10,14 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { useToast } from "@/components/ui/use-toast";
+
+const API_URL = "http://localhost:8080"; // Backend API URL
 
 const Profile = () => {
   const { user, isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -42,19 +45,55 @@ const Profile = () => {
     setMessage({ type: "", text: "" });
     
     try {
-      // Mock update profile success
-      setTimeout(() => {
-        setMessage({ 
-          type: "success", 
-          text: "Profile updated successfully" 
-        });
-        setIsUpdating(false);
-      }, 1000);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      const response = await fetch(`${API_URL}/auth/updateUser`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          bio,
+          profilePicture
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update profile');
+      }
+
+      const data = await response.json();
+      
+      setMessage({ 
+        type: "success", 
+        text: data.message || "Profile updated successfully" 
+      });
+      
+      toast({
+        title: "Success",
+        description: "Profile updated successfully",
+      });
+      
     } catch (error) {
+      console.error('Error updating profile:', error);
       setMessage({ 
         type: "error", 
-        text: "Failed to update profile. Please try again."
+        text: error instanceof Error ? error.message : "Failed to update profile. Please try again."
       });
+      
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to update profile",
+      });
+    } finally {
       setIsUpdating(false);
     }
   };

@@ -1,12 +1,12 @@
-
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import BlogCard from "../components/BlogCard";
-import { getBlogs } from "../lib/api";
 import { Blog } from "../lib/types";
 import { Input } from "../components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../components/ui/select";
 import { Search } from "lucide-react";
+import { blogService } from "../lib/apiService";
+import { useToast } from "../components/ui/use-toast";
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -14,6 +14,7 @@ const Blogs = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedTag, setSelectedTag] = useState<string>("");
+  const { toast } = useToast();
 
   const tags = Array.from(
     new Set(
@@ -25,18 +26,28 @@ const Blogs = () => {
     const fetchBlogs = async () => {
       setIsLoading(true);
       try {
-        const blogsData = await getBlogs();
+        const blogsData = await blogService.getAll();
         setBlogs(blogsData);
         setFilteredBlogs(blogsData);
       } catch (error) {
         console.error("Error fetching blogs:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load blogs. Using mock data instead."
+        });
+        
+        const { getBlogs } = await import("../lib/api");
+        const mockedBlogs = await getBlogs();
+        setBlogs(mockedBlogs);
+        setFilteredBlogs(mockedBlogs);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchBlogs();
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     let filtered = blogs;
@@ -49,7 +60,7 @@ const Blogs = () => {
       );
     }
     
-    if (selectedTag) {
+    if (selectedTag && selectedTag !== "all-tags") {
       filtered = filtered.filter(blog => 
         blog.tags.includes(selectedTag)
       );
