@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import GameCard from "@/components/GameCard";
-import { getGames } from "@/lib/api";
-import { Game } from "@/lib/types";
-import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import Navbar from "../components/Navbar";
+import GameCard from "../components/GameCard";
+import { getGames } from "../lib/api";
+import { Game } from "../lib/types";
+import { Input } from "../components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../components/ui/select";
 import { Search } from "lucide-react";
 
 const Games = () => {

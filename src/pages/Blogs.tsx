@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import BlogCard from "@/components/BlogCard";
-import { getBlogs } from "@/lib/api";
-import { Blog } from "@/lib/types";
-import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import Navbar from "../components/Navbar";
+import BlogCard from "../components/BlogCard";
+import { getBlogs } from "../lib/api";
+import { Blog } from "../lib/types";
+import { Input } from "../components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../components/ui/select";
 import { Search } from "lucide-react";
 
 const Blogs = () => {
